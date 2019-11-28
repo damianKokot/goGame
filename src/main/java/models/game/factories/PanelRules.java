@@ -14,18 +14,22 @@ public abstract class PanelRules extends Panel {
       vectors.add(new int[]{0, -1});
    }
 
-   public Boolean isValid(int x, int y) {
-      //TODO: implement
-      return null;
+   @Override
+   public Boolean isValid(int x, int y, int playerIndex) {
+      if(board[y][x].getValue() != 0) {
+         return false;
+      }
+      if(board[y][x].getBreaths() == 0) {
+         return checkIfSurrounded(x, y, playerIndex);
+      }
+      return true;
    }
 
    public void push(int x, int y, int playerIndex) throws PushException {
       if(playerIndex < 1 || playerIndex > 2) {
          throw new PushException();
       }
-      //try {
       board[y][x].setValue(playerIndex);
-      //} catch (Out)
 
       refreshBreaths(x, y);
       unify(x, y);
@@ -56,5 +60,18 @@ public abstract class PanelRules extends Panel {
             board[idY][idX].union(board[y][x]);
          }
       }
+   }
+   private Boolean checkIfSurrounded(int x, int y, int playerIndex) {
+      for (int[] vector : vectors) {
+         int idX = x + vector[0];
+         int idY = y + vector[1];
+
+         if (idX < 0 || idY < 0 || idX >= board.length || idY >= board.length) {
+            continue;
+         }
+         if(board[idY][idX].getValue() != playerIndex)
+            return false;
+      }
+      return true;
    }
 }
