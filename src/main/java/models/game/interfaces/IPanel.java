@@ -4,8 +4,11 @@ import models.game.exceptions.PushException;
 
 public interface IPanel {
 
-  Boolean isValid(int x, int y);
-  public void push(int x, int y, int playerIndex) throws PushException;
-  void print();
+  Boolean isValid(int x, int y, int playerIndex);
+  void push(int x, int y, int playerIndex) throws PushException;
   void setSize();
+  int getSize();
+  int[][] getPositions();
+
+  IPanel getInstance();
 }

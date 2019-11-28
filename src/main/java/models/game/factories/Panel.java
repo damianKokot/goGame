@@ -1,10 +1,7 @@
 package models.game.factories;
 
-import models.game.exceptions.PushException;
 import models.game.interfaces.IPanel;
 import models.structures.Union;
-
-import java.util.ArrayList;
 
 abstract class Panel implements IPanel {
    protected Union[][] board;
@@ -15,17 +12,14 @@ abstract class Panel implements IPanel {
    }
 
    @Override
-   public void print() {
-      System.out.print("{\n");
-      for (int i = 0; i < board.length; i++) {
-         System.out.print("{");
-         for (int j = 0; j < board[i].length; j++) {
-            System.out.print(board[i][j].getValue() + ", ");
+   public int[][] getPositions() {
+      int[][] out = new int[getSize()][getSize()];
+      for (int i = 0; i < getSize(); i++) {
+         for (int j = 0; j < getSize(); j++) {
+            out[i][j] = board[i][j].getValue();
          }
-         System.out.print("}\n");
       }
-      System.out.print("}\n");
-
+      return out;
    }
 
    public void resetBoard() {

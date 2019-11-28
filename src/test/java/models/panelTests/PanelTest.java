@@ -66,7 +66,6 @@ public class PanelTest extends PanelNormal {
         {2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 3},
         {7, 7, 7, 7, 7, 7, 2, 3, 3, 3, 3, 3, 2}
       };
-      printArray(getBreathsState());
       Assert.assertTrue(compareArrays(breaths, pattern));
    }
 
@@ -108,22 +107,24 @@ public class PanelTest extends PanelNormal {
       }
       return true;
    }
-   private void printTestingCommands() {
+   @Test
+   public void printTestingCommands() {
       int[][] pattern = new int[][] {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       };
+      /*
       try {
          push(6, 8, 1);
          push(0, 12, 1);
@@ -141,7 +142,7 @@ public class PanelTest extends PanelNormal {
       } catch (PushException e) {
          e.printStackTrace();
       }
-      /*
+      */
       for (int i = 0; i < pattern.length; i++) {
          for (int j = 0; j < pattern.length; j++) {
             if(pattern[i][j] != 0) {
@@ -153,9 +154,10 @@ public class PanelTest extends PanelNormal {
                System.out.println("push(" + j + ", " + i + ", " + pattern[i][j] + ");");
             }
          }
-      }*/
+      }
       printArray(getBreathsState());
 
       resetBoard();
+      Assert.assertTrue(true);
    }
 }
