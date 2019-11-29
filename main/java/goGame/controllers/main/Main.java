@@ -1,11 +1,11 @@
 package goGame.controllers.main;
 
-import goGame.controllers.server.Server;
+import goGame.controllers.server.*;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Server server = new Server(5000);
+		GameServer server = new GameServer(5000);
 	}
 
 }
