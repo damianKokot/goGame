@@ -29,7 +29,7 @@ public class Player extends Client implements GameMember {
 	@Override
 	protected void messageToServer(String mess) {
 		try {
-			out.writeUTF(this.ID+": "+mess);
+			out.writeUTF(this.ID+":"+mess);
 		}catch(IOException i){ 
 			System.out.println(i); 
 		} 
@@ -40,8 +40,8 @@ public class Player extends Client implements GameMember {
 		
 	}
 	
-	public void makeMove(int x, int y) {
-		
+	public void doMove(int x, int y) {
+		messageToServer("domove:"+ Integer.toString(x)+ ":" + Integer.toString(y));
 	}
 	
     public void gameUpdate(int[][] plane) {

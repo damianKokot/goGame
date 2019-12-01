@@ -1,18 +1,19 @@
 package goGame.controllers.server;
 
 import goGame.controllers.server.*;
+import goGame.controllers.interfaces.*;
 import goGame.controllers.abstractclasses.*;
 import java.net.*; 
 import java.io.*; 
 
 
-public class PlayerHandler extends Thread { 
+public class PlayerHandler extends Thread implements GameUtil{ 
 
     final DataInputStream in; 
     final DataOutputStream out; 
     final Socket s; 
     static Server server;
-    public String playerID;
+    private String playerID;
       
     // Constructor 
     public PlayerHandler(Socket s, DataInputStream dis, DataOutputStream dos, Server motherserver) { 
@@ -24,7 +25,7 @@ public class PlayerHandler extends Thread {
         //TODO: add playerID setting !!
     } 
     
-    private void messageToPlayer(String mess) {
+    public void messageToClient(String mess) {
     	try {
     		out.writeUTF(mess); 
     	} catch(IOException i) { 
@@ -32,12 +33,12 @@ public class PlayerHandler extends Thread {
         }
     }
     
-    public String getPlayerID() {
+    public String getID() {
 		return this.playerID;
 	}
     
-    private void messageToServer(String mess) {
-		server.messageInterpreter(mess);
+    public void messageToServer(String mess) {
+		server.messageToGame(mess, this.playerID);
 	}
     
     
@@ -67,10 +68,13 @@ public class PlayerHandler extends Thread {
             	
             	if(!line.equals(null))
             		messageToServer(line);
-                
+            	Thread.yield();
+                Thread.sleep(1);
             } catch (IOException e) { 
                 e.printStackTrace(); 
-            } 
+            } catch(InterruptedException i) { 
+            	System.out.println(i); 
+            }
         } 
           
     } 
