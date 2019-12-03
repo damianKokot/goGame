@@ -2,13 +2,19 @@ package models.game.interfaces;
 
 import models.game.exceptions.PushException;
 
+import java.util.ArrayList;
+
 public interface IPanel {
 
-  Boolean isValid(int x, int y, int playerIndex);
+  void checkIfValid(int x, int y, int playerIndex) throws PushException;
   void push(int x, int y, int playerIndex) throws PushException;
   void setSize();
   int getSize();
   int[][] getPositions();
+  int[][] getBreaths();
 
-  IPanel getInstance();
+  ArrayList<String> getLogs();
+
+  IPanel copy();
+  IPanel getNewInstance();
 }

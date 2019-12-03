@@ -1,37 +1,39 @@
 package models.structures;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Union {
    private Union head;
-   private ArrayList<Union> edges;
+   ArrayList<Union> edges;
    private int value;
    private int breaths;
+   public int x;
+   public int y;
 
    public Union() {
-      resetParameters();
+      this.resetParameters();
    }
-
 
    public Union union(Union newHead) {
-      if(head != null) {
-         return head.union(newHead);
+      if (this.head != null) {
+         return this.head.union(newHead);
+      } else {
+         newHead = newHead.find();
+         if (this.find() == newHead) {
+            return this.find();
+         } else {
+            this.head = newHead;
+            this.edges.add(this);
+            this.head.addEdges(this.edges);
+            this.edges = new ArrayList<>();
+            return this.head;
+         }
       }
-      newHead = newHead.find();
-      if(find() == newHead) {
-         return find();
-      }
-      newHead.breaths += find().breaths;
-      head = newHead;
-      edges.add(this);
-      head.addEdges(edges);
-
-      edges = new ArrayList<>();
-      return head;
-
    }
+
    public Union find() {
-      if(head == null) {
+      if(this.head == null) {
          return this;
       } else {
          return head.find();
@@ -39,20 +41,31 @@ public class Union {
    }
 
    public void resetAllChildes() {
-      for (Union edge : find().edges) {
-         if(edge.edges.size() == 0) {
+      for(Union edge : this.find().edges) {
+         if (edge.edges.size() == 0) {
             edge.resetParameters();
          } else {
             edge.resetAllChildes();
          }
       }
-      resetParameters();
+
+      this.resetParameters();
    }
 
-   private void resetParameters() {
-      head = null;
-      value = 0;
-      edges = new ArrayList<>();
+   public ArrayList<Union> getSet() {
+      if (this.head != null) {
+         return this.find().getSet();
+      } else {
+         ArrayList<Union> out = new ArrayList<>(this.edges);
+         out.add(this);
+         return out;
+      }
+   }
+
+   public void resetParameters() {
+      this.head = null;
+      this.value = 0;
+      this.edges = new ArrayList<>();
    }
 
    private void addEdges(ArrayList<Union> edges) {
@@ -60,22 +73,22 @@ public class Union {
    }
 
    public int getValue() {
-      return find().value;
+      return this.find().value;
    }
 
    public void setValue(int value) {
-      find().value = value;
+      this.find().value = value;
    }
 
    public int getBreaths() {
-      return find().breaths;
+      return this.find().breaths;
    }
 
    public void setBreaths(int breaths) {
-      this.breaths = breaths;
+      this.find().breaths = breaths;
    }
 
    public void substrateBreath() {
-      find().breaths--;
+      --this.find().breaths;
    }
 }

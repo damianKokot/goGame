@@ -1,11 +1,9 @@
 package models.panelTests;
 
 import models.GoGameTest;
-import models.game.GoGame;
-import models.game.exceptions.ForbiddenMoveException;
 import models.game.exceptions.PushException;
 import models.game.exceptions.UserExistsException;
-import models.game.factories.PanelNormal;
+import models.game.factories.ConcreteFactory.PanelNormal;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -46,7 +44,7 @@ public class RulesTest {
 
          try {
             game.push(userId, x, y);
-         } catch (ForbiddenMoveException | PushException ignored) {
+         } catch (PushException ignored) {
 
          }
       }

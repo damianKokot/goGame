@@ -1,77 +1,96 @@
 package models.game.factories;
 
-import models.game.exceptions.PushException;
-import models.game.interfaces.LambdaFunctionVoid;
-
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import models.game.exceptions.PushException;
+import models.game.rulesDecorators.RulesChecker;
+import models.game.rulesDecorators.concreteRules.KoRule;
+import models.game.rulesDecorators.concreteRules.OnTheOtherRule;
+import models.game.rulesDecorators.concreteRules.SuicideRule;
+import models.structures.Union;
 
 public abstract class PanelRules extends Panel {
-   private ArrayList<int[]> vectors = new ArrayList<>();
+   private ArrayList<RulesChecker> rules = new ArrayList<>();
 
-   PanelRules() {
-      vectors.add(new int[]{-1, 0});
-      vectors.add(new int[]{0, 1});
-      vectors.add(new int[]{1, 0});
-      vectors.add(new int[]{0, -1});
+   public PanelRules() {
+      rules.add(new OnTheOtherRule(this));
+      rules.add(new SuicideRule(this));
+      rules.add(new KoRule(this));
    }
 
    @Override
-   public Boolean isValid(int x, int y, int playerIndex) {
-      if(board[y][x].getValue() != 0) {
-         return false;
+   public void checkIfValid(int x, int y, int playerIndex) throws PushException {
+      for(RulesChecker rule : rules) {
+         rule.check(x, y, playerIndex);
       }
-      if(board[y][x].getBreaths() == 0) {
-         return checkIfSurrounded(x, y, playerIndex);
-      }
-      return true;
    }
 
    @Override
    public void push(int x, int y, int playerIndex) throws PushException {
-      if(playerIndex < 1 || playerIndex > 2) {
-         throw new PushException();
-      }
-      board[y][x].setValue(playerIndex);
+      if (playerIndex >= 1 && playerIndex <= 2) {
+         resetLogs();
+         board[y][x].setValue(playerIndex);
 
-      refreshBreaths(x, y);
-      unify(x, y);
+         unify(x, y);
+         refreshBreaths(x, y, false);
+         killNeighbours(x, y);
+      } else {
+         throw new PushException("Invalid username: " + playerIndex);
+      }
    }
 
-   private void refreshBreaths(int X, int Y) {
-      forEachNeighbour(X, Y, (int x, int y, int idX, int idY) -> board[idY][idX].substrateBreath());
+   private void refreshBreaths(int X, int Y, boolean lastStep) {
+      int counter = 0;
+
+      for (Union neighbour : board[Y][X].getSet()) {
+         counter += countNeighbours(neighbour.x, neighbour.y, 0);
+      }
+      board[Y][X].setBreaths(counter);
+
+      if (!lastStep) {
+         for (Union neighbour : getNeighbours(X, Y)) {
+            if (neighbour.getValue() != board[Y][X].getValue()) {
+               refreshBreaths(neighbour.x, neighbour.y, true);
+            }
+         }
+      }
    }
 
    private void unify(int X, int Y) {
-      forEachNeighbour(X, Y, (int x, int y, int idX, int idY) -> {
-         if(board[idY][idX].getValue() != 0 &&
-           board[idY][idX].getValue() == board[y][x].getValue())
-            board[idY][idX].union(board[y][x]);
-      });
-   }
-
-   private Boolean checkIfSurrounded(int x, int y, int playerIndex) {
-      for (int[] vector : vectors) {
-         int idX = x + vector[0];
-         int idY = y + vector[1];
-
-         if (idX < 0 || idY < 0 || idX >= board.length || idY >= board.length) {
-            continue;
+      for (Union neighbour : getNeighbours(X, Y)) {
+         int x = neighbour.x;
+         int y = neighbour.y;
+         if (board[y][x].getValue() != 0 && board[y][x].getValue() == board[Y][X].getValue()) {
+            board[y][x].union(board[Y][X]);
          }
-         if(board[idY][idX].getValue() != playerIndex)
-            return false;
       }
-      return true;
    }
 
-   private void forEachNeighbour(int x, int y, LambdaFunctionVoid operation) {
-      for (int[] vector : vectors) {
-         int idX = x + vector[0];
-         int idY = y + vector[1];
+   private void killNeighbours(int X, int Y) {
+      if (board[Y][X].getValue() != 0) {
+         return;
+      }
+      ArrayList<Union> neighbours = getNeighbours(X, Y);
+      neighbours.add(board[Y][X]);
 
-         if (idX < 0 || idY < 0 || idX >= board.length || idY >= board.length) {
-            continue;
+      for (Union neighbour : neighbours) {
+         int x = neighbour.x;
+         int y = neighbour.y;
+         if (board[y][x].getValue() != 0 && board[y][x].getBreaths() == 0) {
+            kill(x, y, X, Y);
          }
-         operation.start(x, y, idX, idY);
+      }
+   }
+
+   private void kill(int X, int Y, int killX, int killY) {
+      ArrayList<Union> group = board[Y][X].getSet();
+      for (Union member : group) {
+         member.resetParameters();
+      }
+      for (Union member : group) {
+         addLog("deleted " + member.x + " " + member.y + " with " + killX + " " + killY);
+            refreshBreaths(member.x, member.y, false);
       }
    }
 }

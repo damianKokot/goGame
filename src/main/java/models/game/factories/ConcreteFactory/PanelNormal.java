@@ -1,5 +1,6 @@
-package models.game.factories;
+package models.game.factories.ConcreteFactory;
 
+import models.game.factories.PanelRules;
 import models.game.interfaces.IPanel;
 import models.structures.Union;
 
@@ -16,7 +17,7 @@ public class PanelNormal extends PanelRules {
    }
 
    @Override
-   public IPanel getInstance() {
+   public IPanel getNewInstance() {
       return new PanelNormal();
    }
 }

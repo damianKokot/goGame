@@ -9,6 +9,6 @@ public class GoGameTest extends GoGame {
    }
 
    public int[][] getStatusCopiedArray() {
-      return createSubGame().getGameStatus();
+      return this.createSubGame().getGameStatus();
    }
 }

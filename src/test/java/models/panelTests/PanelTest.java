@@ -1,7 +1,7 @@
 package models.panelTests;
 
 import models.game.exceptions.PushException;
-import models.game.factories.PanelNormal;
+import models.game.factories.ConcreteFactory.PanelNormal;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class PanelTest extends PanelNormal {
 
    @Test
    public void shouldMakeCorrectBreaths() {
-      printTestingCommands();
+      //printTestingCommands();
       try {
          push(6, 2, 1);
          push(0, 12, 1);
@@ -69,7 +69,7 @@ public class PanelTest extends PanelNormal {
       Assert.assertTrue(compareArrays(breaths, pattern));
    }
 
-   
+
    private int[][] getBreathsState() {
       int[][] out = new int[board.length][board.length];
       for (int i = 0; i < board.length; i++) {
@@ -86,9 +86,18 @@ public class PanelTest extends PanelNormal {
       for (int i = 0; i < arr.length; i++) {
          System.out.print("{");
          for (int j = 0; j < arr[i].length; j++) {
-            System.out.print(arr[i][j] + ", ");
+            System.out.print(arr[i][j]);
+            if(j != arr.length - 1) {
+               System.out.print(", ");
+            }
          }
-         System.out.print("}\n");
+         System.out.print("}");
+         if(i != arr.length - 1) {
+            System.out.print(",\n");
+         } else {
+            System.out.print("\n");
+         }
+
       }
       System.out.print("}\n");
    }
@@ -155,6 +164,7 @@ public class PanelTest extends PanelNormal {
             }
          }
       }
+      printArray(getPositions());
       printArray(getBreathsState());
 
       resetBoard();
