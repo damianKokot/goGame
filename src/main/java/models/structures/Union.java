@@ -12,28 +12,28 @@ public class Union {
    public int y;
 
    public Union() {
-      this.resetParameters();
+      resetParameters();
    }
 
    public Union union(Union newHead) {
-      if (this.head != null) {
-         return this.head.union(newHead);
+      if (head != null) {
+         return head.union(newHead);
       } else {
          newHead = newHead.find();
-         if (this.find() == newHead) {
-            return this.find();
+         if (find() == newHead) {
+            return find();
          } else {
-            this.head = newHead;
-            this.edges.add(this);
-            this.head.addEdges(this.edges);
-            this.edges = new ArrayList<>();
-            return this.head;
+            head = newHead;
+            edges.add(this);
+            head.addEdges(edges);
+            edges = new ArrayList<>();
+            return head;
          }
       }
    }
 
    public Union find() {
-      if(this.head == null) {
+      if (head == null) {
          return this;
       } else {
          return head.find();
@@ -41,31 +41,30 @@ public class Union {
    }
 
    public void resetAllChildes() {
-      for(Union edge : this.find().edges) {
+      for(Union edge : find().edges) {
          if (edge.edges.size() == 0) {
             edge.resetParameters();
          } else {
             edge.resetAllChildes();
          }
       }
-
-      this.resetParameters();
+      resetParameters();
    }
 
    public ArrayList<Union> getSet() {
-      if (this.head != null) {
-         return this.find().getSet();
+      if (head != null) {
+         return find().getSet();
       } else {
-         ArrayList<Union> out = new ArrayList<>(this.edges);
+         ArrayList<Union> out = new ArrayList<>(edges);
          out.add(this);
          return out;
       }
    }
 
    public void resetParameters() {
-      this.head = null;
+      head = null;
       this.value = 0;
-      this.edges = new ArrayList<>();
+      edges = new ArrayList<>();
    }
 
    private void addEdges(ArrayList<Union> edges) {
@@ -73,22 +72,18 @@ public class Union {
    }
 
    public int getValue() {
-      return this.find().value;
+      return find().value;
    }
 
    public void setValue(int value) {
-      this.find().value = value;
+      find().value = value;
    }
 
    public int getBreaths() {
-      return this.find().breaths;
+      return find().breaths;
    }
 
    public void setBreaths(int breaths) {
-      this.find().breaths = breaths;
-   }
-
-   public void substrateBreath() {
-      --this.find().breaths;
+      find().breaths = breaths;
    }
 }

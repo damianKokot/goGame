@@ -9,29 +9,31 @@ public class GoGame {
    private int idPlayer1;
    private int idPlayer2;
    private IPanel panel;
+   private ArrayList<String> history;
 
    public GoGame(int idPlayer1, IPanel panel) {
       this.idPlayer1 = idPlayer1;
       this.panel = panel;
+      this.history = new ArrayList();
    }
 
    public void push(int idUser, int x, int y) throws PushException {
-      if (x < 0 || x >= panel.getSize()) {
+      if (x >= 0 && x <= this.panel.getSize()) {
+         if (y >= 0 && y <= this.panel.getSize()) {
+            int userIdx = idUser == this.idPlayer1 ? 1 : 2;
+            this.panel.checkIfValid(x, y, userIdx);
+            this.panel.push(x, y, userIdx);
+         } else {
+            throw new PushException("y: " + y);
+         }
+      } else {
          throw new PushException("x: " + x);
       }
-      if (y < 0 || y >= panel.getSize()) {
-         throw new PushException("y: " + y);
-      }
-
-      int userIdx = idUser == idPlayer1? 1 : 2;
-
-      panel.checkIfValid(x, y, userIdx);
-      panel.push(x, y, userIdx);
    }
 
    public void setOpponent(int idPlayer2) throws UserExistsException {
-      if (idPlayer1 == idPlayer2) {
-         throw new UserExistsException("User " + idPlayer1 + "actually is in the game!");
+      if (this.idPlayer1 == idPlayer2) {
+         throw new UserExistsException("User " + this.idPlayer1 + "actually is in the game!");
       } else {
          this.idPlayer2 = idPlayer2;
       }
@@ -39,6 +41,10 @@ public class GoGame {
 
    public int[][] getGameStatus() {
       return this.panel.getPositions();
+   }
+
+   public int[][] getGameBreaths() {
+      return this.panel.getBreaths();
    }
 
    public int[] getUsers() {

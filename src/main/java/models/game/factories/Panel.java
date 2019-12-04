@@ -1,16 +1,15 @@
 package models.game.factories;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import models.game.exceptions.PushException;
 import models.game.interfaces.IPanel;
 import models.structures.Union;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 abstract class Panel implements IPanel {
    protected Union[][] board;
-   private ArrayList<String> logs = new ArrayList();
-   private static ArrayList<int[]> vectors = new ArrayList();
+   private ArrayList<String> logs = new ArrayList<>();
+   private static ArrayList<int[]> vectors;
 
    Panel() {
       setSize();
@@ -18,6 +17,7 @@ abstract class Panel implements IPanel {
    }
 
    static {
+      vectors = new ArrayList<>();
       vectors.add(new int[]{-1, 0});
       vectors.add(new int[]{0, 1});
       vectors.add(new int[]{1, 0});
@@ -27,22 +27,23 @@ abstract class Panel implements IPanel {
    @Override
    public int[][] getPositions() {
       int[][] out = new int[getSize()][getSize()];
-      for (int i = 0; i < getSize(); i++) {
-         for (int j = 0; j < getSize(); j++) {
+
+      for(int i = 0; i < getSize(); ++i) {
+         for(int j = 0; j < getSize(); ++j) {
             out[i][j] = board[i][j].getValue();
          }
       }
+
       return out;
    }
 
-   //TODO: Delete before release
    @Override
    public int[][] getBreaths() {
-      int[][] out = new int[this.getSize()][this.getSize()];
+      int[][] out = new int[getSize()][getSize()];
 
-      for(int i = 0; i < this.getSize(); ++i) {
-         for(int j = 0; j < this.getSize(); ++j) {
-            out[i][j] = this.board[i][j].getBreaths();
+      for(int i = 0; i < getSize(); ++i) {
+         for(int j = 0; j < getSize(); ++j) {
+            out[i][j] = board[i][j].getBreaths();
          }
       }
 
@@ -51,7 +52,7 @@ abstract class Panel implements IPanel {
 
    @Override
    public IPanel copy() {
-      IPanel panel = getNewInstance();
+      IPanel panel = this.getNewInstance();
       int[][] positions = this.getPositions();
 
       for(int i = 0; i < positions.length; ++i) {
@@ -71,56 +72,61 @@ abstract class Panel implements IPanel {
 
    @Override
    public ArrayList<String> getLogs() {
-      return logs;
+      return this.logs;
    }
 
    protected void addLog(String log) {
-      logs.add(log);
+      this.logs.add(log);
    }
 
    public void resetLogs() {
-      logs.clear();
+      this.logs.clear();
    }
 
    protected int countNeighbours(int x, int y, int value) {
       int count = 0;
-      for(int[] vector : vectors) {
+      for (int[] vector : vectors) {
          int idX = x + vector[0];
          int idY = y + vector[1];
 
-         if (idX >= 0 && idY >= 0 && idX < board.length && idY < board.length &&
-           board[idY][idX].getValue() == value) {
-            count++;
+         if (idX >= 0 && idY >= 0 && idX < board.length && idY < board.length && board[idY][idX].getValue() == value) {
+            ++count;
          }
       }
+
       return count;
    }
 
-
-   public void resetBoard() {
-      for(int i = 0; i < board.length; ++i) {
-         for(int j = 0; j < board[i].length; ++j) {
+   protected void resetBoard() {
+      int i;
+      int j;
+      for(i = 0; i < board.length; ++i) {
+         for(j = 0; j < board[i].length; ++j) {
             board[i][j] = new Union();
             board[i][j].x = j;
             board[i][j].y = i;
          }
       }
 
-      for(int i = 0; i < board.length; ++i) {
-         for(int j = 0; j < board[i].length; ++j) {
-            board[i][j].setBreaths(countNeighbours(i, j, 0));
+      for(i = 0; i < board.length; ++i) {
+         for(j = 0; j < board[i].length; ++j) {
+            board[i][j].setBreaths(this.countNeighbours(i, j, 0));
          }
       }
+
    }
-   protected ArrayList<Union> getNeighbours(int x, int y) {
+
+   ArrayList<Union> getNeighbours(int x, int y) {
       ArrayList<Union> neighbours = new ArrayList<>();
-      for(int[] vector : vectors) {
+
+      for (int[] vector : vectors) {
          int idX = x + vector[0];
          int idY = y + vector[1];
          if (idX >= 0 && idY >= 0 && idX < board.length && idY < board.length) {
             neighbours.add(board[idY][idX]);
          }
       }
+
       return neighbours;
    }
 }

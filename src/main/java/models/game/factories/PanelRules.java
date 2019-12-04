@@ -2,7 +2,6 @@ package models.game.factories;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import models.game.exceptions.PushException;
 import models.game.rulesDecorators.RulesChecker;
 import models.game.rulesDecorators.concreteRules.KoRule;
@@ -58,9 +57,11 @@ public abstract class PanelRules extends Panel {
    }
 
    private void unify(int X, int Y) {
+      int x, y;
       for (Union neighbour : getNeighbours(X, Y)) {
-         int x = neighbour.x;
-         int y = neighbour.y;
+         x = neighbour.x;
+         y = neighbour.y;
+
          if (board[y][x].getValue() != 0 && board[y][x].getValue() == board[Y][X].getValue()) {
             board[y][x].union(board[Y][X]);
          }
@@ -69,28 +70,29 @@ public abstract class PanelRules extends Panel {
 
    private void killNeighbours(int X, int Y) {
       if (board[Y][X].getValue() != 0) {
-         return;
-      }
-      ArrayList<Union> neighbours = getNeighbours(X, Y);
-      neighbours.add(board[Y][X]);
+         ArrayList<Union> neighbours = getNeighbours(X, Y);
+         neighbours.add(board[Y][X]);
 
-      for (Union neighbour : neighbours) {
-         int x = neighbour.x;
-         int y = neighbour.y;
-         if (board[y][x].getValue() != 0 && board[y][x].getBreaths() == 0) {
-            kill(x, y, X, Y);
+         for (Union neighbour : neighbours) {
+            int x = neighbour.x;
+            int y = neighbour.y;
+
+            if (board[y][x].getValue() != 0 && board[y][x].getBreaths() == 0) {
+               kill(x, y, X, Y);
+            }
          }
       }
    }
 
    private void kill(int X, int Y, int killX, int killY) {
       ArrayList<Union> group = board[Y][X].getSet();
+
       for (Union member : group) {
          member.resetParameters();
       }
       for (Union member : group) {
          addLog("deleted " + member.x + " " + member.y + " with " + killX + " " + killY);
-            refreshBreaths(member.x, member.y, false);
+         refreshBreaths(member.x, member.y, false);
       }
    }
 }
