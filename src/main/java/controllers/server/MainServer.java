@@ -8,9 +8,8 @@ import javax.swing.*;
 
 public class MainServer extends JFrame{
 	
-	private GameServer server;
+	private Server server;
 	private boolean isRunning=false;
-	private JLabel clientCount;
 	private JLabel serverStatus;
 	
 	public MainServer() {
@@ -18,21 +17,18 @@ public class MainServer extends JFrame{
 		setTitle("GoServer-Controller");
 		JButton runServer = new JButton("Run Server");
 		JButton killServer = new JButton("Kill Server");
-		JButton refresh = new JButton("Refresh");
 		JPanel upperPanel = new JPanel();
 		JPanel lowerPanel = new JPanel();
 		JPanel middlePanel = new JPanel();
-		clientCount= new JLabel("Clients connected: ...");
 		serverStatus= new JLabel("Server status: OFFLINE");
         
 		add(middlePanel);
 		add(upperPanel, BorderLayout.NORTH);
 		add(lowerPanel, BorderLayout.SOUTH);
+		
 		upperPanel.add(runServer);
 		upperPanel.add(killServer);
-		upperPanel.add(refresh);
 		middlePanel.add(serverStatus);
-		lowerPanel.add(clientCount);
         setBounds(100, 100, 400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);	
@@ -49,15 +45,6 @@ public class MainServer extends JFrame{
 			}
 		});
         
-        refresh.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				refresh();
-			}
-		});
-	}
-
-	public static void main(String[] args) {
-		MainServer GoServerController = new MainServer();
 	}
 	
 	private void refresh() {
@@ -69,7 +56,7 @@ public class MainServer extends JFrame{
 	
 	private void startServer() {
 		if(!isRunning) {
-		 server = new GameServer(5000);
+		 server = new Server(5000);
 		 isRunning=true;
 		 server.start();
 		 refresh();
@@ -84,6 +71,9 @@ public class MainServer extends JFrame{
 		 System.exit(0);
 		}
 	}
-
+    
+	public static void main(String[] args) {
+		MainServer GoServerController = new MainServer();
+	}
 }
  

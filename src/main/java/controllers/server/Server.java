@@ -1,4 +1,4 @@
-package controllers.server.abstractclasses;
+package controllers.server;
 
 import java.net.*;
 import java.io.*;
@@ -6,14 +6,11 @@ import java.net.ServerSocket;
 
 import controllers.client.player.*;
 import controllers.exception.*;
-import controllers.server.PlayerHandler;
-import controllers.server.gameroom.*;
-import controllers.server.interfaces.*;
 
 import java.util.*;
 
 
-public abstract class Server extends Thread{ 
+public class Server extends Thread{ 
     //initialize socket and input stream 
     private ServerSocket server   = null; 
   
@@ -44,20 +41,20 @@ public abstract class Server extends Thread{
     public void run () {
     	
         Socket userSocket = null; 
-        DataOutputStream dos;
-        DataInputStream dis;
+        DataOutputStream outputStream;
+        DataInputStream inputStream;
     	
         while (true){ 
             try{ 
                 userSocket=connectUser();
-                dis = new DataInputStream(userSocket.getInputStream()); 
-                dos = new DataOutputStream(userSocket.getOutputStream()); 
-                PlayerHandler p1 = new PlayerHandler(userSocket, dis, dos); 
+                inputStream = new DataInputStream(userSocket.getInputStream()); 
+                outputStream = new DataOutputStream(userSocket.getOutputStream()); 
+                PlayerHandler p1 = new PlayerHandler(userSocket, inputStream, outputStream); 
                 
                 userSocket=connectUser();
-                dis = new DataInputStream(userSocket.getInputStream()); 
-                dos = new DataOutputStream(userSocket.getOutputStream()); 
-                PlayerHandler p2 = new PlayerHandler(userSocket, dis, dos); 
+                inputStream = new DataInputStream(userSocket.getInputStream()); 
+                outputStream = new DataOutputStream(userSocket.getOutputStream()); 
+                PlayerHandler p2 = new PlayerHandler(userSocket, inputStream, outputStream); 
   
                 GameRoom game = new GameRoom(p1,p2);
                 game.start();
@@ -65,12 +62,8 @@ public abstract class Server extends Thread{
                 Thread.yield();
                 Thread.sleep(1);
 
-            } catch(IOException i) { 
+            } catch(UserConnectionErr | InterruptedException | IOException i) { 
                 System.out.println(i); 
-            } catch(InterruptedException i) { 
-            	System.out.println(i); 
-            } catch(UserConnectionErr i) { 
-            	System.out.println(i); 
             }
         } 
 

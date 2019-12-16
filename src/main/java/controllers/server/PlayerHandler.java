@@ -1,7 +1,6 @@
 package controllers.server;
 
 import controllers.server.*;
-import controllers.server.interfaces.*;
 import controllers.client.abstractclasses.*;
 import controllers.exception.ConnectionErr;
 
@@ -9,24 +8,24 @@ import java.net.*;
 import java.io.*; 
 
 
-public class PlayerHandler extends Thread implements GameUtil{ 
+public class PlayerHandler extends Thread { 
 
-    final DataInputStream in; 
-    final DataOutputStream out; 
-    final Socket s; 
+    final DataInputStream inputstream; 
+    final DataOutputStream outputstream; 
+    final Socket socket; 
     private int playerID;
     private String message=null;
       
     // Constructor 
-    public PlayerHandler(Socket s, DataInputStream dis, DataOutputStream dos) { 
-        this.s = s; 
-        this.in = dis; 
-        this.out = dos;          
+    public PlayerHandler(Socket socket, DataInputStream dis, DataOutputStream dos) { 
+        this.socket = socket; 
+        this.inputstream = dis; 
+        this.outputstream = dos;          
     } 
     
     public void messageToClient(String mess) {
     	try {
-    		out.writeUTF(mess); 
+    		outputstream.writeUTF(mess); 
     	} catch(IOException i) { 
             System.out.println(i); 
         }
@@ -38,7 +37,7 @@ public class PlayerHandler extends Thread implements GameUtil{
     	    String line;
     		 
     		while(true) {
-    		  line= in.readUTF();
+    		  line= inputstream.readUTF();
     		  
     		  if(!line.equals(null))
     			  return line;
@@ -47,10 +46,10 @@ public class PlayerHandler extends Thread implements GameUtil{
               Thread.sleep(1);
     		}
 
-    	} catch (IOException e) { 
+    	} catch (InterruptedException e) { 
             e.printStackTrace(); 
-        } catch (InterruptedException i) { 
-            i.printStackTrace(); 
+        } catch  (IOException e) { 
+            return "DISCONNECTED";
         }
     	
     	throw new ConnectionErr();
@@ -68,9 +67,9 @@ public class PlayerHandler extends Thread implements GameUtil{
     	
         try{ 
     	 
-        	this.s.close(); 
-        	this.out.close(); 
-            this.in.close(); 
+        	this.socket.close(); 
+        	this.outputstream.close(); 
+            this.inputstream.close(); 
          
         } catch(IOException i) { 
             System.out.println(i); 

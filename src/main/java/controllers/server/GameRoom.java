@@ -1,11 +1,13 @@
-package controllers.server.gameroom;
+package controllers.server;
 
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import controllers.commandfacade.CommandMaker;
 import controllers.exception.*;
 import controllers.server.*;
+import models.GoGame;
 import models.exceptions.*;
 import models.factories.*;
 import models.interfaces.*;
@@ -19,6 +21,7 @@ public class GameRoom extends Thread {
 	private boolean isGameOn=false;
 	private boolean turn = true;
 	private int skips=0;
+	private CommandMaker commander;
 	
 	
 	public GameRoom(PlayerHandler player1, PlayerHandler player2) {
@@ -26,20 +29,25 @@ public class GameRoom extends Thread {
 		this.player2=player2;
 		player1.setID(1);
 		player2.setID(2);
+		commander=new CommandMaker();
 	}
 	
-	private void createGame(int plane) {
+	private void createGame(String plane) {
 		
 		IPanel panel = null;
 		
 		switch(plane) {
-		  case 9:
+		  case "9":
 			  panel = new PanelSmall();
 			 break;
-		  case 13:
+		  case "13":
 			  panel = new PanelNormal();
 		    break;
-		  case 19:
+		  case "19":
+			  panel = new PanelLarge();
+			break;
+			
+		  default: 
 			  panel = new PanelLarge();
 			break;
 		}
@@ -53,8 +61,16 @@ public class GameRoom extends Thread {
 		}
 	}
 	
-	private int getPlaneSize() {
-		return 13;
+	private String getPlaneSize() {
+		player1.messageToClient(commander.getPlane().toString());
+		player2.messageToClient(commander.waitForTurn().toString());
+		
+		String planesize =null;
+		
+		try { planesize=player1.waitForMove();}
+		catch(ConnectionErr e){ System.out.println(e);}
+		
+		return planesize;
 	}
 	
 	private void runGame(){
@@ -64,12 +80,7 @@ public class GameRoom extends Thread {
 	}
 	
 	private void updateGame() {
-		int[][] plane = game.getGameStatus();
-		JsonObject command = new JsonObject();
-		Gson gson = new Gson();
-		command.addProperty("command", "gameupdate");
-		command.addProperty("plane", gson.toJson(plane));
-		
+		JsonObject command = commander.gameUpdate(game.getGameStatus());
 		player1.messageToClient(command.toString());
 		player2.messageToClient(command.toString());
 	}
@@ -77,18 +88,27 @@ public class GameRoom extends Thread {
 	private void makeMove(int id) {
 		
 		String move;
-		JsonObject command = new JsonObject();
+		JsonParser jsonParser = new JsonParser();
 		
 		try {
-			if(id==1)
+			if(id==1) {
+				player1.messageToClient(commander.yourTurn().toString());
+				player2.messageToClient(commander.waitForTurn().toString());
 				move=player1.waitForMove();
-			else
+			}else {
+				player2.messageToClient(commander.yourTurn().toString());
+				player1.messageToClient(commander.waitForTurn().toString());
 				move=player2.waitForMove();
-			
-			JsonParser jsonParser = new JsonParser();
-			command= jsonParser.parse(move).getAsJsonObject();
-			
-			commandInterpreter(id, command);
+			}
+
+			if(move!="DISCONNECTED")
+			   commandInterpreter(id, jsonParser.parse(move).getAsJsonObject());
+			else {
+				player2.messageToClient(commander.playerDisconection().toString());
+				player1.messageToClient(commander.playerDisconection().toString());
+				stop();
+			}
+			  
 			
 		}catch(ConnectionErr e) {
 			System.out.println(e);
@@ -108,11 +128,10 @@ public class GameRoom extends Thread {
 			
 		}else if(command.get("command").getAsString().equals("skip")){
 			
-			//skips++;
+			skips++;
 			
-			//if(skips==2)
-				//TODO implement !
-			//else;
+			if(skips==2)
+				gameSumUp(0);
 			
 		}else if(command.get("command").getAsString().equals("pass")){
 			if(id==1)
@@ -126,10 +145,42 @@ public class GameRoom extends Thread {
 	
 	private void repeatMove(int id) {
 		
+		turn=!turn;
+		
+		if(id==1)
+			player1.messageToClient(commander.repeatMove().toString());
+		else
+			player2.messageToClient(commander.repeatMove().toString());
 	}
 	
     private void gameSumUp(int id) {
-	
+    	
+    	int looserId;
+    	int scores[]= game.getScores();
+    	
+    	if(id==1) {
+    		looserId=2;
+    	}else if(id==2){
+    		looserId=1;
+    	}else {
+    		if(scores[0]>scores[1])
+    			looserId=2;
+    		else if(scores[0] <scores[1])
+    			looserId=1;
+    		else
+    			looserId=0;
+    	}
+		
+		if(id==1) {
+			player1.messageToClient(commander.win(scores[0], scores[1]).toString());
+			player2.messageToClient(commander.loose(scores[0], scores[1]).toString());
+		}else if(id==2) {
+			player1.messageToClient(commander.loose(scores[0], scores[1]).toString());
+			player2.messageToClient(commander.win(scores[0], scores[1]).toString());
+		} else {
+			player1.messageToClient(commander.tie().toString());
+			player2.messageToClient(commander.tie().toString());
+		}
 	}
 	
 	@Override
@@ -146,9 +197,8 @@ public class GameRoom extends Thread {
 				else
 					makeMove(player2.getID());
 				
-				updateGame();
-				
 				turn=!turn;
+				updateGame();
 				
 				Thread.yield(); 
 				Thread.sleep(1);
