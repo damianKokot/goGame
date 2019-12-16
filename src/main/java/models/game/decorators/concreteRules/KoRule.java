@@ -1,10 +1,10 @@
-package models.game.rulesDecorators.concreteRules;
+package models.game.decorators.concreteRules;
 
 import java.util.ArrayList;
 import models.game.exceptions.PushException;
 import models.game.factories.PanelRules;
 import models.game.interfaces.IPanel;
-import models.game.rulesDecorators.RulesChecker;
+import models.game.decorators.RulesChecker;
 
 public class KoRule extends RulesChecker {
    public KoRule(PanelRules rules) {

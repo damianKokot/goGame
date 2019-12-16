@@ -1,8 +1,8 @@
-package models.game.rulesDecorators.concreteRules;
+package models.game.decorators.concreteRules;
 
 import models.game.exceptions.PushException;
 import models.game.factories.PanelRules;
-import models.game.rulesDecorators.RulesChecker;
+import models.game.decorators.RulesChecker;
 
 public class OnTheOtherRule extends RulesChecker {
    public OnTheOtherRule(PanelRules rules) {

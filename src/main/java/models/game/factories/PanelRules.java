@@ -1,12 +1,12 @@
 package models.game.factories;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import models.game.exceptions.PushException;
-import models.game.rulesDecorators.RulesChecker;
-import models.game.rulesDecorators.concreteRules.KoRule;
-import models.game.rulesDecorators.concreteRules.OnTheOtherRule;
-import models.game.rulesDecorators.concreteRules.SuicideRule;
+import models.game.decorators.RulesChecker;
+import models.game.decorators.concreteRules.KoRule;
+import models.game.decorators.concreteRules.OnTheOtherRule;
+import models.game.decorators.concreteRules.SuicideRule;
 import models.structures.Union;
 
 public abstract class PanelRules extends Panel {

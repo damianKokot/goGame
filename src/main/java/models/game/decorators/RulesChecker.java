@@ -1,4 +1,4 @@
-package models.game.rulesDecorators;
+package models.game.decorators;
 
 import models.game.factories.PanelRules;
 import models.game.interfaces.ICheckable;

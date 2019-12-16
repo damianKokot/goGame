@@ -66,6 +66,7 @@ public class RulesTest {
       return true;
    }
 
+
    private void printArray(int[][] arr) {
       System.out.print("{\n");
       for (int i = 0; i < arr.length; i++) {
