@@ -1,8 +1,20 @@
 package models.interfaces;
 
+import models.exceptions.PushException;
+
+import java.util.ArrayList;
+
 public interface IPanel {
 
-  void push(int x, int y, int playerIndex);
+  void checkIfValid(int x, int y, int playerIndex) throws PushException;
+  void push(int x, int y, int playerIndex) throws PushException;
   void setSize();
+  int getSize();
   int[][] getPositions();
+  int[][] getBreaths();
+
+  ArrayList<String> getLogs();
+
+  IPanel copy();
+  IPanel getNewInstance();
 }

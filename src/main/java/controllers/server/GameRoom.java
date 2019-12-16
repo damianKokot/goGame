@@ -9,7 +9,7 @@ import controllers.exception.*;
 import controllers.server.*;
 import models.GoGame;
 import models.exceptions.*;
-import models.factories.*;
+import models.factories.ConcreteFactory.*;
 import models.interfaces.*;
 import models.*;
 

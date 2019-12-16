@@ -1,19 +1,11 @@
 package controllers.client.player;
 
-import controllers.client.abstractclasses.*;
-import controllers.client.interfaces.GameMember;
-import controllers.commandfacade.CommandMaker;
-import models.factories.PanelLarge;
-import models.factories.PanelNormal;
-import models.factories.PanelSmall;
-
-import java.io.IOException;
-import java.util.Scanner;
-
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import controllers.client.abstractclasses.Client;
+import controllers.client.interfaces.GameMember;
+import controllers.commandfacade.CommandMaker;
 
 public class Player extends Client implements GameMember {
 	
