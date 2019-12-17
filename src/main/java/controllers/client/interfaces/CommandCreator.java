@@ -19,4 +19,5 @@ public interface CommandCreator {
 	public JsonObject setPlane(int x);
 	public JsonObject tie();
 	public JsonObject playerDisconection();
+	public JsonObject serverDisconection();
 }

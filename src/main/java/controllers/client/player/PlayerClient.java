@@ -11,11 +11,11 @@ import controllers.commandfacade.CommandMaker;
 public abstract class PlayerClient extends Client implements GoGui {
 	
 	private int[][] plane;
-	private CommandMaker commander;
+	private int myId=2;
+	private int firstMove=0;
 	
-	public PlayerClient(String adress, int port) {
-		super(adress,port);
-		commander= new CommandMaker();  
+	public PlayerClient() {
+		commander= new CommandMaker(); 
 	}
 	
 	@Override
@@ -38,11 +38,14 @@ public abstract class PlayerClient extends Client implements GoGui {
 		
 		JsonParser jsonParser = new JsonParser();
 		JsonObject command = jsonParser.parse(mess).getAsJsonObject();
+		serverStatus(true);
 		
 		switch(command.get("command").getAsString()) {
 		
 		  case "gameupdate":
 			  gameUpdate(command);
+			  if(firstMove==1)
+			      nextStage(plane.length);
 			 break;
 			 
 		  case "repeatmove":
@@ -50,11 +53,15 @@ public abstract class PlayerClient extends Client implements GoGui {
 		    break;
 		    
 		  case "chooseplane":
+			   myId=1;
 			   setMessage("Choose board size!"); 
+			   nextStage(1);
 			break;
 			
 		  case "wait":
 			   setMessage("Waiting for opponents move..."); 
+			   if(firstMove==0)
+				  nextStage(0);
 			break;
 			
 		  case "winner":
@@ -66,7 +73,7 @@ public abstract class PlayerClient extends Client implements GoGui {
 			break;
 			    
 		  case "yourmove":
-			    setMessage("It is your move!"); 	  
+			    setMessage("It is your move!"); 	
 		    break;
 		    
 		  case "tie":
@@ -78,19 +85,24 @@ public abstract class PlayerClient extends Client implements GoGui {
 		    break;
 		    
 		  case "serverdied":
-			    setMessage("Server has disconnected!"); 		  
+			    setMessage("Server has disconnected!"); 
+			    serverStatus(false);
 		    break;
 		    
-		}	
+		}
+		firstMove++;
+		
+
 	}
 	
 	private void gameUpdate(JsonObject command) {
 		Gson gson = new Gson();
 		int[][] arr=gson.fromJson(command.get("plane").getAsString(), int[][].class);
 		
+		
 		for(int i=0; i< arr.length; i++)
 			for(int j=0; j< arr.length; j++)
-				if(this.plane[i][j]!=arr[i][j])
+				if(this.plane==null || this.plane[i][j]!=arr[i][j])
 					refresh(i,j, arr[i][j]);
 		
 		
@@ -99,6 +111,10 @@ public abstract class PlayerClient extends Client implements GoGui {
     
     public int[][] getPlane(){
     	return this.plane;
+    }
+    
+    public int getMyId() {
+    	return myId;
     }
  
 	public void setPlane(int size) {

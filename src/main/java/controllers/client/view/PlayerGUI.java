@@ -8,56 +8,30 @@ import javax.swing.*;
 
 public class PlayerGUI extends JFrame {
 	
-	public JLabel serverStatus;
-	private TextField y;
-	private TextField x;
-	private String dispMessage;
-	public int lastX, lastY, planeSize;
 	public JLabel serverComm;
-	public GoPanel display;
+	public JLabel serverStatus;
+	public JPanel display;
 
-	public PlayerGUI(GoPanel dispPanel) {
+	public PlayerGUI() {
 		
 		setTitle("GoGame-Player");
 		setResizable(false);
-		JButton skip = new JButton("Skip");
-		JButton pass = new JButton("Pass");
-		JPanel upperPanel = new JPanel();
 		JPanel lowerPanel = new JPanel();
-		serverStatus= new JLabel("Server status: NOT CONNECTED");
+		serverStatus= new JLabel("SERVER: Not connected...");
 		serverComm= new JLabel();
 		serverComm.setForeground (Color.red);
 		serverComm.setFont(new Font("Serif", Font.BOLD, 20));
 		Box box = Box.createVerticalBox();
 		lowerPanel.add(box);
-		this.display=dispPanel;
-
-		add(display, BorderLayout.CENTER);
-		add(upperPanel, BorderLayout.WEST);
+		
 		add(lowerPanel, BorderLayout.SOUTH);
-		upperPanel.add(skip);
-		upperPanel.add(pass);
 		box.add(serverComm);
 		box.add(serverStatus);
-		upperPanel.setBackground(Color.GRAY);
 		lowerPanel.setBackground(Color.GRAY);
-		upperPanel.setPreferredSize(new Dimension(100, 100));
-		lowerPanel.setPreferredSize(new Dimension(100, 60));
-        setBounds(100, 100, 700, 500);
+		lowerPanel.setPreferredSize(new Dimension(100, 90));
+        setBounds(100, 100, 730, 530);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);	
-        
-        skip.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dispMessage="skip";	
-			}
-		});
-        
-        pass.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {			
-				dispMessage="pass";			
-			}
-        });
+        setVisible(true);
       
 	}
 	
@@ -65,8 +39,22 @@ public class PlayerGUI extends JFrame {
 		serverComm.setText(mess);
     }
     
-    public void serverStatus(String mess) {
-    	serverStatus.setText(mess);
+    public void serverStatus(boolean state) {
+    	if(state)
+    	  serverStatus.setText("SERVER: Connected");
+    	else
+    	  serverStatus.setText("SERVER: Not connected...");
     }  
+    
+    public void changePanel(JPanel newPanel) {
+    	
+    	if(display!=null)
+    		this.remove(display);
+    	
+    	this.display=newPanel;
+    	this.add(display, BorderLayout.CENTER);
+    	this.display.revalidate();
+    	
+    }
      
 }

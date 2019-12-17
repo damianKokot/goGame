@@ -35,6 +35,13 @@ public class CommandMaker implements CommandCreator{
 		command.addProperty("command", "playerdisconnected");
 		return command;
 	}
+	
+	@Override
+	public JsonObject serverDisconection() {
+		JsonObject command = new JsonObject();
+		command.addProperty("command", "serverdied");
+		return command;
+	}
 
 	@Override
 	public JsonObject gameUpdate(int[][] plane) {

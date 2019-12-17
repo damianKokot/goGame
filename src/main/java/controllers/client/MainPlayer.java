@@ -15,9 +15,6 @@ import controllers.client.view.PlayerPanel;
 public class MainPlayer {
 	
 	public static void main(String args[]) {       
-		 PlayerPanel client = new PlayerPanel("127.0.0.1", 5000);
-		 client.start();
-	}
-
-     
+		 PlayerPanel client = new PlayerPanel();
+	} 
 }

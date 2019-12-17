@@ -32,8 +32,8 @@ public class GameRoom extends Thread {
 		commander=new CommandMaker();
 	}
 	
-	private void createGame(int plane) {
-		
+	private void createGame() {
+		int plane=getPlaneSize();
 		IPanel panel = null;
 		
 		switch(plane) {
@@ -75,12 +75,6 @@ public class GameRoom extends Thread {
 		int size = command.get("x").getAsInt();
 		
 		return size;
-	}
-	
-	private void runGame(){
-		createGame(getPlaneSize());
-		isGameOn=true;
-		updateGame();
 	}
 	
 	private void updateGame() {
@@ -190,7 +184,9 @@ public class GameRoom extends Thread {
 	@Override
 	public void run(){
 		
-		runGame();
+		createGame();
+		isGameOn=true;
+		updateGame();
 		
 		while(isGameOn) {
 			
@@ -209,7 +205,6 @@ public class GameRoom extends Thread {
 			}catch(InterruptedException i){
 				System.out.println(i);
 			}
-			
 		}
 
 	}

@@ -1,20 +1,26 @@
 package controllers.client.abstractclasses;
 
 import controllers.client.interfaces.GameMember;
+import controllers.commandfacade.CommandMaker;
 import controllers.server.*;
 import java.net.*; 
 import java.io.*; 
 
 public abstract class Client extends Thread implements GameMember { 
 	// initialize socket and input output streams 
-	protected Socket socket = null; 
-	protected DataInputStream input = null; 
-	protected DataOutputStream output= null; 
+	private Socket socket = null; 
+	private DataInputStream input = null; 
+	private DataOutputStream output= null; 
+	protected CommandMaker commander;
 	
 	// constructor to put ip address and port 
-	public Client(String address, int port) 
-	{ 
-		// establish a connection 
+	public Client() {}
+	
+	public void connectToServer() {
+		   
+		String address="127.0.0.1";
+		int port=5000;
+		
 		try
 		{ 
 			socket = new Socket(address, port); 
@@ -29,8 +35,8 @@ public abstract class Client extends Thread implements GameMember {
 		} catch(IOException u) { 
 			System.out.println(u); 
 		}
-	 
-	} 
+		start();
+	}
 	
 	protected void messageToServer(String mess) {
 		try {
@@ -39,20 +45,6 @@ public abstract class Client extends Thread implements GameMember {
 		{ 
 			System.out.println(i); 
 		} 
-		
-	}
-	
-	protected void shutDown() {
-		// close the connection 
-		try
-		{ 
-			input.close(); 
-			output.close(); 
-			socket.close(); 
-		} catch(IOException i) { 
-			System.out.println(i); 
-		} 		
-		System.exit(0);
 	}
 	
 	@Override
@@ -74,9 +66,9 @@ public abstract class Client extends Thread implements GameMember {
                Thread.yield();
                Thread.sleep(1);
 			} 
-			catch(IOException i) 
-			{ 
-				System.out.println(i); 
+			catch(IOException i) { 
+				commandInterpreter(commander.serverDisconection().toString()); 
+				stop();
 			} catch(InterruptedException i) { 
             	System.out.println(i); 
             }
