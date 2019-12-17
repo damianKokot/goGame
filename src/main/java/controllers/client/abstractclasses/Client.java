@@ -1,10 +1,11 @@
 package controllers.client.abstractclasses;
 
+import controllers.client.interfaces.GameMember;
 import controllers.server.*;
 import java.net.*; 
 import java.io.*; 
 
-public abstract class Client extends Thread { 
+public abstract class Client extends Thread implements GameMember { 
 	// initialize socket and input output streams 
 	protected Socket socket = null; 
 	protected DataInputStream input = null; 
@@ -53,8 +54,6 @@ public abstract class Client extends Thread {
 		} 		
 		System.exit(0);
 	}
-	
-	public abstract void  commandInterpreter(String mess);
 	
 	@Override
 	public void run () {

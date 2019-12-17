@@ -1,9 +1,9 @@
 package models.panelTests.rulesTest;
 
-import models.game.GoGame;
-import models.game.exceptions.PushException;
-import models.game.exceptions.UserExistsException;
-import models.game.factories.ConcreteFactory.PanelNormal;
+import models.GoGame;
+import models.exceptions.PushException;
+import models.exceptions.UserExistsException;
+import models.factories.ConcreteFactory.PanelNormal;
 import org.junit.Assert;
 import org.junit.Test;
 

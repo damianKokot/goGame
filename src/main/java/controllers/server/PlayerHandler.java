@@ -20,7 +20,7 @@ public class PlayerHandler extends Thread {
     public PlayerHandler(Socket socket, DataInputStream dis, DataOutputStream dos) { 
         this.socket = socket; 
         this.inputstream = dis; 
-        this.outputstream = dos;          
+        this.outputstream = dos;           
     } 
     
     public void messageToClient(String mess) {

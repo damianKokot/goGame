@@ -1,6 +1,6 @@
 package models.panelTests;
 
-import models.game.decorators.PointCounter;
+import models.decorators.PointCounter;
 import org.junit.Assert;
 import org.junit.Test;
 

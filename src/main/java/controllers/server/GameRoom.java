@@ -9,7 +9,7 @@ import controllers.exception.*;
 import controllers.server.*;
 import models.GoGame;
 import models.exceptions.*;
-import models.factories.*;
+import models.factories.ConcreteFactory.*;
 import models.interfaces.*;
 import models.*;
 
@@ -32,18 +32,18 @@ public class GameRoom extends Thread {
 		commander=new CommandMaker();
 	}
 	
-	private void createGame(String plane) {
+	private void createGame(int plane) {
 		
 		IPanel panel = null;
 		
 		switch(plane) {
-		  case "9":
+		  case 9:
 			  panel = new PanelSmall();
 			 break;
-		  case "13":
+		  case 13:
 			  panel = new PanelNormal();
 		    break;
-		  case "19":
+		  case 19:
 			  panel = new PanelLarge();
 			break;
 			
@@ -61,7 +61,7 @@ public class GameRoom extends Thread {
 		}
 	}
 	
-	private String getPlaneSize() {
+	private int getPlaneSize() {
 		player1.messageToClient(commander.getPlane().toString());
 		player2.messageToClient(commander.waitForTurn().toString());
 		
@@ -70,7 +70,11 @@ public class GameRoom extends Thread {
 		try { planesize=player1.waitForMove();}
 		catch(ConnectionErr e){ System.out.println(e);}
 		
-		return planesize;
+		JsonParser jsonParser = new JsonParser();
+		JsonObject command = jsonParser.parse(planesize).getAsJsonObject();
+		int size = command.get("x").getAsInt();
+		
+		return size;
 	}
 	
 	private void runGame(){

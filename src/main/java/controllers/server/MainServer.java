@@ -26,7 +26,7 @@ public class MainServer extends JFrame{
 		add(upperPanel, BorderLayout.NORTH);
 		add(lowerPanel, BorderLayout.SOUTH);
 		
-		upperPanel.add(runServer);
+		upperPanel.add(runServer); 
 		upperPanel.add(killServer);
 		middlePanel.add(serverStatus);
         setBounds(100, 100, 400, 200);

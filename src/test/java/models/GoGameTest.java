@@ -1,7 +1,6 @@
 package models;
 
-import models.game.GoGame;
-import models.game.interfaces.IPanel;
+import models.interfaces.IPanel;
 
 public class GoGameTest extends GoGame {
    public GoGameTest(int idPlayer1, IPanel panel) {

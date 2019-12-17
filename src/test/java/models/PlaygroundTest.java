@@ -1,8 +1,7 @@
 package models;
 
-import models.game.GoGame;
-import models.game.exceptions.UserExistsException;
-import models.game.factories.ConcreteFactory.PanelNormal;
+import models.exceptions.UserExistsException;
+import models.factories.ConcreteFactory.PanelNormal;
 import org.junit.Assert;
 import org.junit.Test;
 

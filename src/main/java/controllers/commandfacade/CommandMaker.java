@@ -90,7 +90,7 @@ public class CommandMaker implements CommandCreator{
 	public JsonObject pass() {
 		JsonObject command = new JsonObject();
 		command.addProperty("command", "pass");
-		return command;
+		return command; 
 	}
 
 	@Override

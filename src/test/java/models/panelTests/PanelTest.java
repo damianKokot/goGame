@@ -1,7 +1,8 @@
 package models.panelTests;
 
-import models.game.exceptions.PushException;
-import models.game.factories.ConcreteFactory.PanelNormal;
+import models.GoGame;
+import models.exceptions.PushException;
+import models.factories.ConcreteFactory.PanelNormal;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -70,6 +71,18 @@ public class PanelTest extends PanelNormal {
    }
 
 
+   @Test 
+   public void shouldPrintArray() {
+	   GoGame game = new GoGame(1, new PanelNormal());
+	   try {
+	      game.setOpponent(2);
+	   }catch(Exception e) {e.printStackTrace();}
+	   
+	   int array[][]=game.getGameStatus();
+	   
+	   Assert.assertTrue(13== array.length);
+			   
+   }
    private int[][] getBreathsState() {
       int[][] out = new int[board.length][board.length];
       for (int i = 0; i < board.length; i++) {

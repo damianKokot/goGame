@@ -5,4 +5,5 @@ public interface GameMember {
 	public void planeUpdate(int[][] plane);	
 	public void skipRound();	
 	public void endGame();
+	public void commandInterpreter(String message);
 }

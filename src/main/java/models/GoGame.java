@@ -1,58 +1,69 @@
 package models;
 
-import models.exceptions.UserExistsException;
+import java.util.ArrayList;
 import models.exceptions.PushException;
+import models.exceptions.UserExistsException;
 import models.interfaces.IPanel;
 
 public class GoGame {
-   private int idPlayer1;  //Black
-   private int idPlayer2;  //White
+   private int idPlayer1;
+   private int idPlayer2;
    private IPanel panel;
+   private ArrayList<String> history;
 
    public GoGame(int idPlayer1, IPanel panel) {
       this.idPlayer1 = idPlayer1;
       this.panel = panel;
-   }
-
-   public void setOpponent(int idPlayer2) throws UserExistsException {
-
+      this.history = new ArrayList();
    }
 
    public void push(int idUser, int x, int y) throws PushException {
-	   System.out.println(idUser+" "+x+" "+y);
-	   
-	   if(x==6 && y==9) 
-		   throw new PushException("Przypex");
-	   
+      if (x >= 0 && x <= this.panel.getSize()) {
+         if (y >= 0 && y <= this.panel.getSize()) {
+            int userIdx = idUser == this.idPlayer1 ? 1 : 2;
+            this.panel.checkIfValid(x, y, userIdx);
+            this.panel.push(x, y, userIdx);
+         } else {
+            throw new PushException("y: " + y);
+         }
+      } else {
+         throw new PushException("x: " + x);
+      }
+   }
+
+   public void setOpponent(int idPlayer2) throws UserExistsException {
+      if (this.idPlayer1 == idPlayer2) {
+         throw new UserExistsException("User " + this.idPlayer1 + "actually is in the game!");
+      } else {
+         this.idPlayer2 = idPlayer2;
+      }
    }
 
    public int[][] getGameStatus() {
-	   
-	   int[][] tab= new int[][] {
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0},
-		   {0,0,0,0,0,0,1,2,0,0,0,0,0}
-	   };
-	   
-      //return panel.getPositions();
-	   return tab;
+      return this.panel.getPositions();
+   }
+
+   public int[][] getGameBreaths() {
+      return this.panel.getBreaths();
    }
 
    public int[] getUsers() {
-      return new int[]{idPlayer1, idPlayer2};
+      return new int[]{this.idPlayer1, this.idPlayer2};
    }
 
    public int[] getScores() {
       return new int[]{0, 0};
+   }
+
+   protected GoGame createSubGame() {
+      GoGame subGame = new GoGame(this.idPlayer1, this.panel.copy());
+
+      try {
+         subGame.setOpponent(this.idPlayer2);
+      } catch (UserExistsException var3) {
+         var3.printStackTrace();
+      }
+
+      return subGame;
    }
 }
