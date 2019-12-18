@@ -69,7 +69,7 @@ public abstract class Client extends Thread implements GameMember {
                 stop();
             } catch (InterruptedException i) {
                 System.out.println(i);
-            } 
+            }
         }
 
 

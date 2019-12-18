@@ -15,10 +15,10 @@ public class KoRule extends RulesChecker {
       IPanel subPanel = this.panel.copy();
       ArrayList<String> logs = this.panel.getLogs();
       if (logs.size() == 1) {
-         String flippedLog = this.flipLog((String)logs.get(0));
+         String flippedLog = this.flipLog(logs.get(0));
          logs = this.getLogsFromPush(subPanel, x, y, playerIndex);
          if (logs.size() == 1) {
-            if (((String)logs.get(0)).equals(flippedLog)) {
+            if (logs.get(0).equals(flippedLog)) {
                throw new PushException("KO rule violated");
             }
          }

@@ -1,20 +1,19 @@
 package models;
 
 import java.util.ArrayList;
+
+import models.decorators.PointCounter;
 import models.exceptions.PushException;
 import models.exceptions.UserExistsException;
 import models.interfaces.IPanel;
 
 public class GoGame {
-   private int idPlayer1;
-   private int idPlayer2;
-   private IPanel panel;
-   private ArrayList<String> history;
+   protected int idPlayer1;
+   protected IPanel panel;
 
    public GoGame(int idPlayer1, IPanel panel) {
       this.idPlayer1 = idPlayer1;
       this.panel = panel;
-      this.history = new ArrayList();
    }
 
    public void push(int idUser, int x, int y) throws PushException {
@@ -34,8 +33,6 @@ public class GoGame {
    public void setOpponent(int idPlayer2) throws UserExistsException {
       if (this.idPlayer1 == idPlayer2) {
          throw new UserExistsException("User " + this.idPlayer1 + "actually is in the game!");
-      } else {
-         this.idPlayer2 = idPlayer2;
       }
    }
 
@@ -43,27 +40,7 @@ public class GoGame {
       return this.panel.getPositions();
    }
 
-   public int[][] getGameBreaths() {
-      return this.panel.getBreaths();
-   }
-
-   public int[] getUsers() {
-      return new int[]{this.idPlayer1, this.idPlayer2};
-   }
-
    public int[] getScores() {
-      return new int[]{0, 0};
-   }
-
-   protected GoGame createSubGame() {
-      GoGame subGame = new GoGame(this.idPlayer1, this.panel.copy());
-
-      try {
-         subGame.setOpponent(this.idPlayer2);
-      } catch (UserExistsException var3) {
-         var3.printStackTrace();
-      }
-
-      return subGame;
+      return new PointCounter().count(getGameStatus());
    }
 }

@@ -11,7 +11,6 @@ public interface IPanel {
   void setSize();
   int getSize();
   int[][] getPositions();
-  int[][] getBreaths();
 
   ArrayList<String> getLogs();
 

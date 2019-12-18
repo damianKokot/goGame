@@ -28,7 +28,7 @@ public class BoardPanel extends JPanel implements PanelState {
 
       Box box = new Box(BoxLayout.Y_AXIS);
       box.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-      box.setPreferredSize(new Dimension(150, 150));
+      box.setPreferredSize(new Dimension(100, 100));
       box.add(Box.createVerticalGlue());
 
       JPanel boardPanel = new JPanel(new SpringLayout());
@@ -86,6 +86,6 @@ public class BoardPanel extends JPanel implements PanelState {
 
    @Override
    public JPanel getPanel() {
-	   return this;
+      return this;
    }
 }

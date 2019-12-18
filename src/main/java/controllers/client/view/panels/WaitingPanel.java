@@ -53,13 +53,12 @@ public class WaitingPanel extends JPanel implements PanelState {
    }
 
    @Override
+   public JPanel getPanel() {
+   	return this;
+   }
+
+   @Override
    public void refresh(int x, int y, int playerId) {
 
-   }
-   
-   @Override
-   public JPanel getPanel() {
-   	// TODO Auto-generated method stub
-   	return this;
    }
 }

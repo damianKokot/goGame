@@ -6,8 +6,10 @@ import controllers.client.view.panels.boards.Board_13x13;
 import controllers.client.view.panels.boards.Board_19x19;
 import controllers.client.view.panels.boards.Board_9x9;
 import controllers.client.view.panels.panels_parts.PanelState;
+import controllers.client.view.panels.panels_parts.SpringUtilities;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,6 +19,7 @@ public class ChoseSizePanel extends JPanel implements PanelState {
    public ChoseSizePanel(PlayerPanel panel) {
       this.playerPanel = panel;
 
+      JLabel label = new JLabel("Wybierz rozmiar planszy");
       JButton small = new JButton("9x9");
       JButton medium = new JButton("13x13");
       JButton big = new JButton("19x19");
@@ -25,9 +28,22 @@ public class ChoseSizePanel extends JPanel implements PanelState {
       medium.addActionListener(getActionListener(13));
       big.addActionListener(getActionListener(19));
 
-      add(small);
-      add(medium);
-      add(big);
+      Box box = new Box(BoxLayout.Y_AXIS);
+      box.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+      box.setAlignmentY(JComponent.CENTER_ALIGNMENT);
+      box.setPreferredSize(new Dimension(100, 140));
+      box.add(Box.createVerticalGlue());
+
+      JPanel actions = new JPanel(new GridLayout(4, 1));
+
+      actions.add(label);
+      actions.add(small);
+      actions.add(medium);
+      actions.add(big);
+
+      box.add(actions);
+      box.add(Box.createVerticalGlue());
+      add(box, BorderLayout.CENTER);
    }
 
    @Override
@@ -50,12 +66,14 @@ public class ChoseSizePanel extends JPanel implements PanelState {
          }
       };
    }
-   
+
    @Override
    public JPanel getPanel() {
-   	 return this;
+   	return this;
    }
-   
+
    @Override
-   public void refresh(int x, int y, int playerId) {}
+   public void refresh(int x, int y, int playerId) {
+
+   }
 }
