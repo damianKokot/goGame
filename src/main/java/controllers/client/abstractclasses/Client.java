@@ -29,18 +29,14 @@ public abstract class Client extends Thread implements GameMember {
 		} catch (IOException u) {
 			commandInterpreter(commander.serverDisconection().toString());
 		}
-		
-			start();
-		
+		start();
 
 		started = true;
 	}
 
 	public void connectBotToServer() {
-
 		connectToServer();
-	 	BotClient bot = new BotClient();
-
+		BotClient bot = new BotClient();
 	}
 
 	protected void messageToServer(String mess) {
@@ -61,8 +57,9 @@ public abstract class Client extends Thread implements GameMember {
 				line = input.readUTF();
 				System.out.println(line);
 
-				if (!line.equals(null))
+				if (!line.equals(null)) {
 					commandInterpreter(line);
+				}
 
 				Thread.yield();
 				Thread.sleep(1);

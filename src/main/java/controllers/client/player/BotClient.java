@@ -7,25 +7,43 @@ import java.util.*;
 
 public class BotClient extends PlayerClient {
    private int[][] coordinates;
+   String message;
+   int updates = 0;
 
    public BotClient() {
       connectToServer();
    }
 
    @Override
-   protected void gameUpdate(JsonObject command) {
-      try {
-         sleep(1000);
-      } catch (InterruptedException e) {
-         e.printStackTrace();
+   public void setMessage(String message) {
+      if(message.equals("It is your move!")) {
+         if(this.message == null) {
+            doStrategy();
+         }
+         messageToServer(this.message);
+         this.message = null;
       }
+   }
 
+   @Override
+   public void doMove(int x, int y) {
+      this.message = commander.makeMove(x, y).toString();
+   }
+
+   @Override
+   protected void gameUpdate(JsonObject command) {
+      updates++;
       Gson gson = new Gson();
       int[][] arr = gson.fromJson(command.get("plane").getAsString(), int[][].class);
+      if (updates < 2) {
+         plane = arr;
+         return;
+      }
+
 
       boolean opponentPassed = true;
-      for (int i = 0; i < plane.length; i++) {
-         for (int j = 0; j < plane.length; j++) {
+      for (int i = 0; i < arr.length; i++) {
+         for (int j = 0; j < arr.length; j++) {
             if (arr[i][j] != plane[i][j]) {
                opponentPassed = false;
                break;
@@ -34,8 +52,8 @@ public class BotClient extends PlayerClient {
       }
       if(opponentPassed) {
          skipRound();
+         return;
       }
-
 
       ArrayList<int[]> path = reachablePath(arr, coordinates);
       while (coordinates == null || path == null) {
@@ -44,10 +62,11 @@ public class BotClient extends PlayerClient {
       }
 
       boolean moveMade = false;
-      for(int[] point:path) {
-         if(plane[point[1]][point[0]] == 0) {
+      for(int i = 0; i < path.size(); ++i) {
+         if(plane[path.get(i)[1]][path.get(i)[0]] == 0) {
             moveMade = true;
-            doMove(point[0], point[1]);
+            doMove(path.get(i)[0], path.get(i)[1]);
+            break;
          }
       }
       if(!moveMade) {
@@ -58,11 +77,33 @@ public class BotClient extends PlayerClient {
       this.plane = arr;
    }
 
+   protected void doStrategy() {
+      ArrayList<int[]> path = reachablePath(plane, coordinates);
+      while (coordinates == null || path == null) {
+         coordinates = getRandomPoints();
+         path = reachablePath(plane, coordinates);
+      }
+
+      boolean moveMade = false;
+      for(int i = 0; i < path.size(); ++i) {
+         if(plane[path.get(i)[1]][path.get(i)[0]] == 0) {
+            moveMade = true;
+            doMove(path.get(i)[0], path.get(i)[1]);
+            break;
+         }
+      }
+      if(!moveMade) {
+         coordinates = getRandomPoints();
+         doStrategy();
+      }
+   }
+
    protected ArrayList<int[]> reachablePath(int[][] panel, int[][] coordinates) {
       int[][] visited = new int[panel.length][panel.length];
       int[][] vectors = {{0,1}, {1, 0}, {0, -1}, {-1, 0}, {1, 1}, {-1, 1}, {1, -1}, {-1, -1}};
 
-      if(panel[coordinates[0][1]][coordinates[0][0]] == 1) {
+
+      if(coordinates == null || panel[coordinates[0][1]][coordinates[0][0]] == 1) {
          return null;
       }
 
@@ -90,6 +131,7 @@ public class BotClient extends PlayerClient {
 
          queue.remove();
       }
+
 
       if(visited[coordinates[1][1]][coordinates[1][0]] != 0 ) {
          ArrayList<int[]> backtrace = new ArrayList<>();
@@ -129,25 +171,23 @@ public class BotClient extends PlayerClient {
       Random random = new Random();
 
       int[][] coordinates = new int[2][2];
-      for (int i = 0; i < 2; i++) {
-         coordinates[i][0] = random.nextInt(plane.length);
-         coordinates[i][1] = random.nextInt(plane.length);
-      }
+      int[] startOrEnd = new int[]{0, plane.length - 1};
+
+      int axis = random.nextInt(2);
+      coordinates[0][axis] = random.nextInt(plane.length);
+      coordinates[0][Math.abs(axis - 1)] = startOrEnd[random.nextInt(2)];
+
+      axis = random.nextInt(2);
+      coordinates[1][axis] = random.nextInt(plane.length);
+      coordinates[1][Math.abs(axis - 1)] = startOrEnd[random.nextInt(2)];
+
 
       return coordinates;
    }
 
 
-
-
-
    @Override
    public void refresh(int x, int y, int value) {
-
-   }
-
-   @Override
-   public void setMessage(String message) {
 
    }
 

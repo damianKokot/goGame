@@ -22,7 +22,6 @@ public class BoardButton extends JButton {
    }
 
    public void changeMember(int occupied) {
-      System.out.println("x: " + x + " y: " + y + " o: " + occupied);
       if(occupied == 0) {
          setBackground(Color.lightGray);
       } else if(occupied == 1) {

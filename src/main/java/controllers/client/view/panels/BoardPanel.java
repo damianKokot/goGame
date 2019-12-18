@@ -80,7 +80,6 @@ public class BoardPanel extends JPanel implements PanelState {
 
    @Override
    public void refresh(int x, int y, int playerId) {
-      System.out.println("x: " + x + " y: " + y + " id: " + playerId);
       board[y][x].changeMember(playerId);
    }
 

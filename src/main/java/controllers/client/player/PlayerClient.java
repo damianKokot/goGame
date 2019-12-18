@@ -21,8 +21,8 @@ public abstract class PlayerClient extends Client implements GoGui {
 
     @Override
     public void doMove(int x, int y) {
-    	if(myTurn) 
-    		messageToServer(commander.makeMove(x, y).toString());
+        if(myTurn)
+            messageToServer(commander.makeMove(x, y).toString());
     }
 
     @Override
