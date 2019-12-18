@@ -14,14 +14,21 @@ public class BotClient extends PlayerClient {
 
    @Override
    protected void gameUpdate(JsonObject command) {
+      try {
+         sleep(1000);
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
+
       Gson gson = new Gson();
       int[][] arr = gson.fromJson(command.get("plane").getAsString(), int[][].class);
 
       boolean opponentPassed = true;
       for (int i = 0; i < plane.length; i++) {
          for (int j = 0; j < plane.length; j++) {
-            if(arr[i][j] != plane[i][j]) {
+            if (arr[i][j] != plane[i][j]) {
                opponentPassed = false;
+               break;
             }
          }
       }
@@ -51,13 +58,17 @@ public class BotClient extends PlayerClient {
       this.plane = arr;
    }
 
-   private ArrayList<int[]> reachablePath(int[][] panel, int[][] coordinates) {
+   protected ArrayList<int[]> reachablePath(int[][] panel, int[][] coordinates) {
       int[][] visited = new int[panel.length][panel.length];
       int[][] vectors = {{0,1}, {1, 0}, {0, -1}, {-1, 0}, {1, 1}, {-1, 1}, {1, -1}, {-1, -1}};
 
+      if(panel[coordinates[0][1]][coordinates[0][0]] == 1) {
+         return null;
+      }
+
       Queue<int[]> queue = new LinkedList<>();
       queue.add(coordinates[0]);
-      int counter = 0;
+      int counter = 2;
       visited[coordinates[0][1]][coordinates[0][0]] = 1;
 
       while(!queue.isEmpty()) {
@@ -84,7 +95,8 @@ public class BotClient extends PlayerClient {
          ArrayList<int[]> backtrace = new ArrayList<>();
          int x = coordinates[1][0];
          int y = coordinates[1][1];
-         while (x != coordinates[0][0] && y != coordinates[0][1]) {
+         backtrace.add(new int[]{x, y});
+         while (x != coordinates[0][0] || y != coordinates[0][1]) {
             int smallestNeighbourX = x;
             int smallestNeighbourY = y;
             for (int[] vector:vectors) {
@@ -95,7 +107,8 @@ public class BotClient extends PlayerClient {
                   continue;
                }
 
-               if(visited[neighbourY][neighbourX] < visited[smallestNeighbourY][smallestNeighbourX]) {
+               if(visited[neighbourY][neighbourX] != 0 &&
+                 visited[neighbourY][neighbourX] < visited[smallestNeighbourY][smallestNeighbourX]) {
                   smallestNeighbourX = neighbourX;
                   smallestNeighbourY = neighbourY;
                }
