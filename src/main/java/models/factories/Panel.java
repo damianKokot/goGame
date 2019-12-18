@@ -38,19 +38,6 @@ abstract class Panel implements IPanel {
    }
 
    @Override
-   public int[][] getBreaths() {
-      int[][] out = new int[getSize()][getSize()];
-
-      for(int i = 0; i < getSize(); ++i) {
-         for(int j = 0; j < getSize(); ++j) {
-            out[i][j] = board[i][j].getBreaths();
-         }
-      }
-
-      return out;
-   }
-
-   @Override
    public IPanel copy() {
       IPanel panel = this.getNewInstance();
       int[][] positions = this.getPositions();
@@ -75,15 +62,15 @@ abstract class Panel implements IPanel {
       return this.logs;
    }
 
-   protected void addLog(String log) {
+   void addLog(String log) {
       this.logs.add(log);
    }
 
-   public void resetLogs() {
+   void resetLogs() {
       this.logs.clear();
    }
 
-   protected int countNeighbours(int x, int y, int value) {
+   int countNeighbours(int x, int y, int value) {
       int count = 0;
       for (int[] vector : vectors) {
          int idX = x + vector[0];

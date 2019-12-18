@@ -1,5 +1,6 @@
 package models.panelTests;
 
+import models.GoGame;
 import models.exceptions.PushException;
 import models.factories.ConcreteFactory.PanelNormal;
 import org.junit.Assert;
@@ -69,7 +70,6 @@ public class PanelTest extends PanelNormal {
       Assert.assertTrue(compareArrays(breaths, pattern));
    }
 
-
    private int[][] getBreathsState() {
       int[][] out = new int[board.length][board.length];
       for (int i = 0; i < board.length; i++) {
@@ -133,25 +133,7 @@ public class PanelTest extends PanelNormal {
         {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       };
-      /*
-      try {
-         push(6, 8, 1);
-         push(0, 12, 1);
-         push(1, 12, 1);
-         push(2, 12, 1);
-         push(3, 12, 1);
-         push(4, 12, 1);
-         push(5, 12, 1);
 
-         push(2, 2, 1);
-         push(1, 3, 1);
-         push(2, 3, 1);
-         push(3, 3, 1);
-         push(2, 4, 1);
-      } catch (PushException e) {
-         e.printStackTrace();
-      }
-      */
       for (int i = 0; i < pattern.length; i++) {
          for (int j = 0; j < pattern.length; j++) {
             if(pattern[i][j] != 0) {
