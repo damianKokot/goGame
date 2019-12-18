@@ -26,12 +26,15 @@ public class WaitingPanel extends JPanel implements PanelState {
       JPanel container = new JPanel(new BorderLayout());
 
       JLabel label = new JLabel("Wait for server...");
-      JButton button = new JButton("Connect to game");
+      JButton button = new JButton("Multiplayer");
+      JButton botButton = new JButton("Singleplayer");
       button.addActionListener(getActionListener());
-
+      botButton.addActionListener(getActionBotListener());
+      
       container.add(label, BorderLayout.NORTH);
+      container.add(botButton);
       container.add(button, BorderLayout.SOUTH);
-
+      
       return container;
    }
 
@@ -43,6 +46,16 @@ public class WaitingPanel extends JPanel implements PanelState {
 	         }
 	      };
    }
+   
+   private ActionListener getActionBotListener() {
+	      return new ActionListener() {
+	         @Override
+	         public void actionPerformed(ActionEvent actionEvent) {
+	            panel.connectBotToServer();
+	         }
+	      };
+  }
+   
    @Override
    public PanelState next(int value) {
       if(value == 1) {

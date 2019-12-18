@@ -173,10 +173,10 @@ public class GameRoom extends Thread {
                 looserId = 0;
         }
 
-        if (id == 1) {
+        if (looserId==2) {
             player1.messageToClient(commander.win(scores[0], scores[1]).toString());
             player2.messageToClient(commander.loose(scores[0], scores[1]).toString());
-        } else if (id == 2) {
+        } else if (looserId == 1) {
             player1.messageToClient(commander.loose(scores[0], scores[1]).toString());
             player2.messageToClient(commander.win(scores[0], scores[1]).toString());
         } else {

@@ -1,79 +1,79 @@
 package controllers.client.abstractclasses;
 
 import controllers.client.interfaces.GameMember;
+import controllers.client.player.BotClient;
 import controllers.commandfacade.CommandMaker;
 import controllers.server.*;
 import java.net.*;
 import java.io.*;
 
 public abstract class Client extends Thread implements GameMember {
-    // initialize socket and input output streams 
-    private Socket socket = null;
-    private DataInputStream input = null;
-    private DataOutputStream output = null;
-    protected CommandMaker commander;
-    private boolean started= false;
+	// initialize socket and input output streams
+	private Socket socket = null;
+	private DataInputStream input = null;
+	private DataOutputStream output = null;
+	protected CommandMaker commander;
+	private boolean started = false;
 
+	public void connectToServer() {
 
-    public void connectToServer() {
+		String address = "127.0.0.1";
+		int port = 5000;
 
-        String address = "127.0.0.1";
-        int port = 5000;
+		try {
+			socket = new Socket(address, port);
 
-        try {
-            socket = new Socket(address, port);
-            System.out.println("Connected");
+			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+			output = new DataOutputStream(socket.getOutputStream());
 
-            input = new DataInputStream(
-                new BufferedInputStream(socket.getInputStream()));
+		} catch (IOException u) {
+			commandInterpreter(commander.serverDisconection().toString());
+		}
+		
+			start();
+		
 
-            // sends output to the socket 
-            output = new DataOutputStream(socket.getOutputStream());
+		started = true;
+	}
 
-        } catch (IOException u) {
-            System.out.println(u);
-        }
-        
-        if(!started)
-         start();
-        
-        started=true;
-    }
+	public void connectBotToServer() {
 
-    protected void messageToServer(String mess) {
-        try {
-            output.writeUTF(mess);
-        } catch (IOException i) {
-            System.out.println(i);
-        }
-    }
+		connectToServer();
+	 	BotClient bot = new BotClient();
 
-    @Override
-    public void run() {
+	}
 
-        String line;
+	protected void messageToServer(String mess) {
+		try {
+			output.writeUTF(mess);
+		} catch (IOException i) {
+			System.out.println(i);
+		}
+	}
 
-        while (true) {
-            try {
-                line = input.readUTF();
-                System.out.println(line);
+	@Override
+	public void run() {
 
-                if (!line.equals(null))
-                    commandInterpreter(line);
+		String line;
 
+		while (true) {
+			try {
+				line = input.readUTF();
+				System.out.println(line);
 
-                Thread.yield();
-                Thread.sleep(1);
-            } catch (java.lang.NullPointerException | IOException i) {
-                commandInterpreter(commander.serverDisconection().toString());
-                stop();
-            } catch (InterruptedException i) {
-                System.out.println(i);
-            }
-        }
+				if (!line.equals(null))
+					commandInterpreter(line);
 
+				Thread.yield();
+				Thread.sleep(1);
+			} catch (java.lang.NullPointerException | IOException i) {
+				commandInterpreter(commander.serverDisconection().toString());
+				stop();
+			} catch (InterruptedException i) {
+				System.out.println(i);
+			}
+		}
 
-    }
-
+	}
 
 }
