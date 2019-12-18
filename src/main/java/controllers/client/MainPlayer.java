@@ -13,8 +13,10 @@ import controllers.client.view.PlayerGUI;
 import controllers.client.view.PlayerPanel;
 
 public class MainPlayer {
+	
+	private static PlayerPanel client;
 
 	public static void main(String args[]) {
-		PlayerPanel client = new PlayerPanel();
+		client = new PlayerPanel();
 	}
 }
