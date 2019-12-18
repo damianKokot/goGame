@@ -1,10 +1,6 @@
 package controllers.client.view;
 
-import javax.swing.JPanel;
-
-import controllers.client.interfaces.GoGui;
 import controllers.client.player.PlayerClient;
-import controllers.client.view.panels.ChoseSizePanel;
 import controllers.client.view.panels.WaitingPanel;
 import controllers.client.view.panels.panels_parts.PanelState;
 

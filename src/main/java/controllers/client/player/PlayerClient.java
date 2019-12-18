@@ -10,8 +10,7 @@ import controllers.commandfacade.CommandMaker;
 
 public abstract class PlayerClient extends Client implements GoGui {
 
-    private int[][] plane;
-    private int myId = 2;
+    protected int[][] plane;
     private int Move = 0;
     protected boolean myTurn, repeat=false;
     private String lastCommand;
@@ -61,7 +60,6 @@ public abstract class PlayerClient extends Client implements GoGui {
                 break;
 
             case "chooseplane":
-                myId = 1;
                 setMessage("Choose board size!");
                 nextStage(1);
                 break;
@@ -111,7 +109,7 @@ public abstract class PlayerClient extends Client implements GoGui {
         Move++;
     }
 
-    private void gameUpdate(JsonObject command) {
+    protected void gameUpdate(JsonObject command) {
         Gson gson = new Gson();
         int[][] arr = gson.fromJson(command.get("plane").getAsString(), int[][].class);
 
@@ -122,14 +120,9 @@ public abstract class PlayerClient extends Client implements GoGui {
 
         this.plane = arr;
     }
-    
-    public int getMyId() {
-        return myId;
-    }
 
     public void setPlane(int size) {
         messageToServer(commander.setPlane(size).toString());
-        System.out.println(size);
     }
 
 }
