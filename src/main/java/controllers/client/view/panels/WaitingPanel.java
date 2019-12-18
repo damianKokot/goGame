@@ -3,8 +3,12 @@ package controllers.client.view.panels;
 import controllers.client.view.PlayerPanel;
 import controllers.client.view.panels.panels_parts.PanelState;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import java.awt.FlowLayout;
+import java.awt.BorderLayout;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,21 +17,29 @@ public class WaitingPanel extends JPanel implements PanelState {
 
    public WaitingPanel(PlayerPanel panel) {
       this.panel = panel;
-      setLayout(new BorderLayout());
+      this.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+      add(getContent());
+   }
+
+   private JPanel getContent() {
+      JPanel container = new JPanel(new BorderLayout());
+
       JLabel label = new JLabel("Wait for server...");
       JButton button = new JButton("Connect to game");
-      
       button.addActionListener(getActionListener());
-      
-      add(label, BorderLayout.CENTER);
-     // add(button);
+
+      container.add(label, BorderLayout.NORTH);
+      container.add(button, BorderLayout.SOUTH);
+
+      return container;
    }
-   
+
    private ActionListener getActionListener() {
 	      return new ActionListener() {
 	         @Override
 	         public void actionPerformed(ActionEvent actionEvent) {
-	           
+	            panel.connectToServer();
 	         }
 	      };
    }

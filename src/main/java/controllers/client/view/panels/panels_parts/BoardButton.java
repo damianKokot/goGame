@@ -17,35 +17,25 @@ public class BoardButton extends JButton {
       this.y=y;
       this.player = player;
       setActionListener();
-      setForeground(Color.GRAY);
-      //setVisible(false);
+      setPreferredSize(new Dimension(10, 10));
+      setBackground(Color.LIGHT_GRAY);
    }
 
    public void changeMember(int occupied) {
-      //setVisible(true);
-      if(player.getMyId() == 1) {
-         setForeground(Color.WHITE);
-      } else {
-         setForeground(Color.BLACK);
+      System.out.println("x: " + x + " y: " + y + " o: " + occupied);
+      if(occupied == 0) {
+         setBackground(Color.lightGray);
+      } else if(occupied == 1) {
+         setBackground(Color.WHITE);
+      } else if(occupied == 2){
+         setBackground(Color.BLACK);
       }
    }
 
    private void setActionListener() {
-      /*
-      this.addMouseListener(new java.awt.event.MouseAdapter() {
-         public void mouseEntered(java.awt.event.MouseEvent evt) {
-            setBackground(Color.GREEN);
-         }
-
-         public void mouseExited(java.awt.event.MouseEvent evt) {
-            setBackground(Color.WHITE);
-         }
-      });
-      */
       addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent actionEvent) {
-            System.out.println("Clicked x:" + x + " y: "+ y);
             player.doMove(x, y);
          }
       });

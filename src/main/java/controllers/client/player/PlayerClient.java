@@ -9,116 +9,127 @@ import controllers.client.interfaces.GoGui;
 import controllers.commandfacade.CommandMaker;
 
 public abstract class PlayerClient extends Client implements GoGui {
-	
-	private int[][] plane;
-	private int myId=2;
-	private int firstMove=0;
-	
-	public PlayerClient() {
-		commander= new CommandMaker(); 
-	}
-	
-	@Override
-	public void doMove(int x, int y) {
-		messageToServer(commander.makeMove(x, y).toString());
-	}
-	
-	@Override
-	public void skipRound() {	
-		messageToServer(commander.skipRound().toString());
-	} 
-	
-	@Override
-	public void endGame() {
-		messageToServer(commander.pass().toString());
-	}
-	
-	@Override
-	public void commandInterpreter(String mess) {
-		
-		JsonParser jsonParser = new JsonParser();
-		JsonObject command = jsonParser.parse(mess).getAsJsonObject();
-		serverStatus(true);
-		
-		switch(command.get("command").getAsString()) {
-		
-		  case "gameupdate":
-			  gameUpdate(command);
-			  if(firstMove==1)
-			      nextStage(plane.length);
-			 break;
-			 
-		  case "repeatmove":
-			   setMessage("You can't move like this! Repeat your move!");  
-		    break;
-		    
-		  case "chooseplane":
-			   myId=1;
-			   setMessage("Choose board size!"); 
-			   nextStage(1);
-			break;
-			
-		  case "wait":
-			   setMessage("Waiting for opponents move..."); 
-			   if(firstMove==0)
-				  nextStage(0);
-			break;
-			
-		  case "winner":
-			   setMessage("You have won!"); 
-			break;
-			
-		  case "looser":
-			    setMessage("You have lost!"); 
-			break;
-			    
-		  case "yourmove":
-			    setMessage("It is your move!"); 	
-		    break;
-		    
-		  case "tie":
-			    setMessage("It is a tie!"); 		  
-		    break;
-		    
-		  case "playerdisconnected":
-			 	setMessage("Opponent has disconnected!");  
-		    break;
-		    
-		  case "serverdied":
-			    setMessage("Server has disconnected!"); 
-			    serverStatus(false);
-		    break;
-		    
-		}
-		firstMove++;
-		
 
-	}
-	
-	private void gameUpdate(JsonObject command) {
-		Gson gson = new Gson();
-		int[][] arr=gson.fromJson(command.get("plane").getAsString(), int[][].class);
-		
-		
-		for(int i=0; i< arr.length; i++)
-			for(int j=0; j< arr.length; j++)
-				if(this.plane==null || this.plane[i][j]!=arr[i][j])
-					refresh(i,j, arr[i][j]);
-		
-		
-		this.plane=arr;
-	}
-    
-    public int[][] getPlane(){
-    	return this.plane;
+    private int[][] plane;
+    private int myId = 2;
+    private int Move = 0;
+    protected boolean myTurn, repeat=false;
+    private String lastCommand;
+
+    public PlayerClient() {
+        commander = new CommandMaker();
+    }
+
+    @Override
+    public void doMove(int x, int y) {
+    	if(myTurn) 
+    		messageToServer(commander.makeMove(x, y).toString());
+    }
+
+    @Override
+    public void skipRound() {
+    	if(myTurn)
+    		messageToServer(commander.skipRound().toString());
+    }
+
+    @Override
+    public void endGame() {
+    	if(myTurn)
+    		messageToServer(commander.pass().toString());
+    }
+
+    @Override
+    public void commandInterpreter(String mess) {
+
+        JsonParser jsonParser = new JsonParser();
+        JsonObject command = jsonParser.parse(mess).getAsJsonObject();
+        serverStatus(true);
+
+        String commandStr = command.get("command").getAsString();
+        
+        switch (commandStr) {
+
+            case "gameupdate":
+                gameUpdate(command);
+                if (Move == 1)
+                    nextStage(plane.length);
+                break;
+
+            case "repeatmove":
+                setMessage("You can't move like this! Repeat your move!");  
+                repeat=true;
+                break;
+
+            case "chooseplane":
+                myId = 1;
+                setMessage("Choose board size!");
+                nextStage(1);
+                break;
+
+            case "wait":
+            	myTurn=false;
+                setMessage("Waiting for opponents move...");
+                if (Move == 0)
+                    nextStage(0);
+                break;
+
+            case "winner":
+                setMessage("You have won!");
+                stop();
+                break;
+
+            case "looser":
+                setMessage("You have lost!");
+                stop();
+                break;
+
+            case "yourmove":
+            	myTurn=true;
+            	
+                if(!repeat)
+            	    setMessage("It is your move!");
+            	
+                if (Move == 1)
+                    nextStage(plane.length);
+                break;
+
+            case "tie":
+                setMessage("It is a tie!");
+                stop();
+                break;
+
+            case "playerdisconnected":
+                setMessage("Opponent has disconnected!");
+                break;
+
+            case "serverdied":
+                setMessage("Server connection error!");
+                serverStatus(false);
+                break;
+
+        }
+        Move++;
+    }
+
+    private void gameUpdate(JsonObject command) {
+        Gson gson = new Gson();
+        int[][] arr = gson.fromJson(command.get("plane").getAsString(), int[][].class);
+
+        for (int i = 0; i < arr.length; i++)
+            for (int j = 0; j < arr.length; j++)
+                if (this.plane == null || this.plane[i][j] != arr[i][j])
+                    refresh(i, j, arr[i][j]);
+
+        this.plane = arr;
     }
     
     public int getMyId() {
-    	return myId;
+        return myId;
     }
- 
-	public void setPlane(int size) {
-		messageToServer(commander.setPlane(size).toString());
-	}
-	
+
+    public void setPlane(int size) {
+        messageToServer(commander.setPlane(size).toString());
+        System.out.println(size);
+    }
+
 }

@@ -17,14 +17,19 @@ public class BoardPanel extends JPanel implements PanelState {
    public BoardPanel (PlayerPanel panel, int boardSize) {
       this.panel = panel;
       this.setLayout(new BorderLayout());
-      this.add(getPassAndExit());
+      this.add(getPassAndExit(), BorderLayout.SOUTH);
       board = new BoardButton[boardSize][boardSize];
 
       for (int i = 0; i < boardSize; i++) {
          for (int j = 0; j < boardSize; j++) {
-            board[i][j] = new BoardButton(this.panel, j, i);
+            board[i][j] = new BoardButton(this.panel, i, j);
          }
       }
+
+      Box box = new Box(BoxLayout.Y_AXIS);
+      box.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+      box.setPreferredSize(new Dimension(150, 150));
+      box.add(Box.createVerticalGlue());
 
       JPanel boardPanel = new JPanel(new SpringLayout());
       for (int i = 0; i < boardSize; i++) {
@@ -32,8 +37,11 @@ public class BoardPanel extends JPanel implements PanelState {
             boardPanel.add(board[i][j]);
          }
       }
-      SpringUtilities.makeCompactGrid(boardPanel, boardSize, boardSize,3, 3, 3, 3);
-      this.add(boardPanel);
+      SpringUtilities.makeCompactGrid(boardPanel, boardSize, boardSize,3, 3, 10, 10);
+
+      box.add(boardPanel);
+      box.add(Box.createVerticalGlue());
+      add(box, BorderLayout.CENTER);
    }
 
    private JPanel getPassAndExit() {
@@ -72,12 +80,12 @@ public class BoardPanel extends JPanel implements PanelState {
 
    @Override
    public void refresh(int x, int y, int playerId) {
+      System.out.println("x: " + x + " y: " + y + " id: " + playerId);
       board[y][x].changeMember(playerId);
    }
 
-@Override
-public JPanel getPanel() {
-	// TODO Auto-generated method stub
-	return this;
-}
+   @Override
+   public JPanel getPanel() {
+	   return this;
+   }
 }

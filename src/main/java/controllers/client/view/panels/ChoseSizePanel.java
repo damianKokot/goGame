@@ -28,8 +28,6 @@ public class ChoseSizePanel extends JPanel implements PanelState {
       add(small);
       add(medium);
       add(big);
-
-      //TODO Set message to "Chose panel size"
    }
 
    @Override
@@ -41,11 +39,6 @@ public class ChoseSizePanel extends JPanel implements PanelState {
       } else {
          return new Board_19x19(playerPanel);
       }
-   }
-
-   @Override
-   public void refresh(int x, int y, int playerId) {
-
    }
 
    private ActionListener getActionListener(final int value) {
@@ -60,7 +53,9 @@ public class ChoseSizePanel extends JPanel implements PanelState {
    
    @Override
    public JPanel getPanel() {
-   	// TODO Auto-generated method stub
-   	return this;
+   	 return this;
    }
+   
+   @Override
+   public void refresh(int x, int y, int playerId) {}
 }
